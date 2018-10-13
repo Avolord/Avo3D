@@ -15,7 +15,7 @@ public class Projection {
 	protected static Matrix Cabinet = initCabinet(63.4d);
 	protected static V3D CameraPos = setCameraPos(0d,0d,-100d);
 	protected static V3D CameraRot = setCameraRot(0d,0d,0d);
-	protected static V3D viewerDistance = setViewerDistance(0d, 0d, 100d);
+	protected static V3D viewerDistance = setViewerDistance(0d, 0d, 50d);
 
 	private static Matrix initSimpleOrtho() {
 		return Matrix.fromArray(new double[][] { 

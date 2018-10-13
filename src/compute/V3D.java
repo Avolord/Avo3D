@@ -7,6 +7,10 @@ import screen.ObjectBuffer2D;
 public class V3D extends Matrix {
 			
 	private static ObjectBuffer2D buffer = JFXdraw.getBuffer2D();
+	
+	public V3D() {
+		super(4, 1);
+	}
 
 	public V3D(double x, double y, double z) {
 		super(4, 1);
@@ -14,6 +18,50 @@ public class V3D extends Matrix {
 		data[1][0] = y;
 		data[2][0] = z;
 		data[3][0] = 1;
+	}
+	
+	public V3D(double x, double y, double z, double w) {
+		super(4, 1);
+		data[0][0] = x;
+		data[1][0] = y;
+		data[2][0] = z;
+		data[3][0] = w;
+	}
+	
+	public static V3D fromMatrix(Matrix matrix) {
+		if(matrix.getRows() != 4 || matrix.getCols() != 1) {
+			return null;
+		}
+		
+		return new V3D(matrix.getData(0, 0),
+				matrix.getData(1, 0),
+				matrix.getData(2, 0),
+				matrix.getData(3, 0)
+				);
+	}
+	
+	public static V3D fromArray(double[] array) {
+		if(array.length != 4 && array.length != 3) {
+			return null;
+		}
+		
+		return new V3D(array[0],
+				array[0],
+				array[0],
+				(array.length == 4) ? array[3] : 1
+				);
+	}
+	
+	public static V3D random(int min, int max) {
+		V3D result = new V3D();
+		result.randomize(min, max);
+		return result;
+	}
+	
+	public static V3D random(double min, double max) {
+		V3D result = new V3D();
+		result.randomize(min, max);
+		return result;
 	}
 
 	public static void initBuffer(ObjectBuffer2D buffer) {
@@ -25,33 +73,24 @@ public class V3D extends Matrix {
 	}
 	
 	public boolean equals(V3D v2) {
-		return (data[0][0] == v2.getData(0,0) && data[1][0] == v2.getData(1,0) && data[2][0] == v2.getData(2,0));
-	}
-
-	public void drawSimpleOrtho() {
-		Point2D p = Projection.simpleOrthographic(this);
-		buffer.circle(p.getX(), p.getY(), 2);
-	}
-
-	public void simpleOrthoLine(V3D point) {
-		Point2D p1 = Projection.simpleOrthographic(this);
-		Point2D p2 = Projection.simpleOrthographic(point);
-		V3D.buffer.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-	}
-
-	public void simpleOrthoLine(double x, double y, double z) {
-		Point2D p1 = Projection.simpleOrthographic(this);
-		Point2D p2 = Projection.simpleOrthographic(new V3D(x, y, z));
-		V3D.buffer.line(p1.getX(), p1.getY()+100, p2.getX(), p2.getY()+100);
+		return (this.getX() == v2.getX() && this.getY() == v2.getY() && this.getZ() == v2.getZ());
 	}
 	
-	public void weakPerspectiveLine(V3D point) {
-		Point2D p1 = Projection.weakPerspective(this);
-		Point2D p2 = Projection.weakPerspective(point);
-		V3D.buffer.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+	public double distance(V3D vector) {
+		double dx = this.getX() - vector.getX();
+		double dy = this.getY() - vector.getY();
+		double dz = this.getZ() - vector.getZ();
+		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 	
-	public static Matrix rotateX(V3D vector, double degree) {
+	public double distance(double x, double y, double z) {
+		double dx = this.getX() - x;
+		double dy = this.getY() - y;
+		double dz = this.getZ() - z;
+		return Math.sqrt(dx * dx + dy * dy + dz * dz);
+	}
+	
+	public static V3D rotateX(V3D vector, double degree) {
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{1, 0, 0, 0},
@@ -59,7 +98,7 @@ public class V3D extends Matrix {
 			{0, Math.sin(angle), Math.cos(angle), 0},
 			{0, 0, 0, 1}
 		});
-		return rotate.mult(vector);
+		return V3D.fromMatrix(rotate.mult(vector));
 	}
 	
 	public void rotateX(double degree) {
@@ -73,7 +112,7 @@ public class V3D extends Matrix {
 		this.data = rotate.mult(this).data;
 	}
 	
-	public static Matrix rotateY(V3D vector, double degree) {
+	public static V3D rotateY(V3D vector, double degree) {
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), 0, Math.sin(angle), 0},
@@ -81,7 +120,7 @@ public class V3D extends Matrix {
 			{-Math.sin(angle), 0, Math.cos(angle), 0},
 			{0, 0, 0, 1}
 		});
-		return rotate.mult(vector);
+		return V3D.fromMatrix(rotate.mult(vector));
 	}
 	
 	public void rotateY(double degree) {
@@ -95,7 +134,7 @@ public class V3D extends Matrix {
 		this.data = rotate.mult(this).data;
 	}
 	
-	public static Matrix rotateZ(V3D vector, double degree) {
+	public static V3D rotateZ(V3D vector, double degree) {
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), -Math.sin(angle), 0, 0},
@@ -103,7 +142,7 @@ public class V3D extends Matrix {
 			{0, 0, 1, 0},
 			{0, 0, 0, 1}
 		});
-		return rotate.mult(vector);
+		return V3D.fromMatrix(rotate.mult(vector));
 	}
 	
 	public void rotateZ(double degree) {
@@ -115,6 +154,29 @@ public class V3D extends Matrix {
 			{0, 0, 0, 1}
 		});
 		this.data = rotate.mult(this).data;
+	}
+	
+	public void drawSimpleOrtho() {
+		Point2D p = Projection.simpleOrthographic(this);
+		buffer.circle(p.getX(), p.getY(), 2);
+	}
+
+	public void simpleOrthoLine(V3D point) {
+		Point2D p1 = Projection.simpleOrthographic(this);
+		Point2D p2 = Projection.simpleOrthographic(point);
+		buffer.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+	}
+
+	public void simpleOrthoLine(double x, double y, double z) {
+		Point2D p1 = Projection.simpleOrthographic(this);
+		Point2D p2 = Projection.simpleOrthographic(new V3D(x, y, z));
+		buffer.line(p1.getX(), p1.getY()+100, p2.getX(), p2.getY()+100);
+	}
+	
+	public void weakPerspectiveLine(V3D point) {
+		Point2D p1 = Projection.weakPerspective(this);
+		Point2D p2 = Projection.weakPerspective(point);
+		buffer.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 
 	public static ObjectBuffer2D getBuffer() {
@@ -129,12 +191,32 @@ public class V3D extends Matrix {
 		return data[0][0];
 	}
 	
+	public void setX(double value) {
+		data[0][0] = value;
+	}
+	
 	public double getY() {
 		return data[1][0];
+	}
+	
+	public void setY(double value) {
+		data[1][0] = value;
 	}
 
 	public double getZ() {
 		return data[2][0];
+	}
+	
+	public void setZ(double value) {
+		data[2][0] = value;
+	}
+	
+	public double getW() {
+		return data[3][0];
+	}
+	
+	public void setW(double value) {
+		data[3][0] = value;
 	}
 	
 }

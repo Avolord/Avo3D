@@ -1,6 +1,7 @@
 package obj3D;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import compute.Projection;
 import compute.V3D;
@@ -91,27 +92,98 @@ public class Obj3D {
 	}
 
 	protected void cleanUpData() {
-		console.log("starting with: " + edges.size() + " edges!");
+		console.log("\nCleaning the Model!\nThis may take a while...");
+		long time = console.timestamp();
+		console.log("\nStarting with: " + edges.size() + " edges!");
 		ArrayList<V3D> ed = new ArrayList<V3D>();
-		ArrayList<Integer> IndexOfDupes = new ArrayList<Integer>();
+		ArrayList<int[]> IndexOfDupes = new ArrayList<int[]>();
 
 		edges.forEach(a -> {
 			boolean isUnique = true;
+			int index = -1;
 			for (int i = 0; i < ed.size(); i++) {
-				if (ed.get(i).equals(a))
+				if (ed.get(i).equals(a)) {
 					isUnique = false;
+					index = edges.indexOf(ed.get(i));
+					i = ed.size();
+				}
 			}
 			if (isUnique || ed.size() == 0)
 				ed.add(a);
 			else
-				IndexOfDupes.add(edges.indexOf(a));
+				IndexOfDupes.add(new int[] { edges.indexOf(a), index });
 		});
+
+		console.log("Found " + IndexOfDupes.size() + " duplicates...");
+		console.log("Edges have been reduced to: " + ed.size() + "!");
+		console.log("\nStarting with: " + vertices.size() + " vertices..");
+
+		vertices.forEach(vert -> {
+			for (int i = 0; i < vert.length; i++) {
+				V3D searched = edges.get(vert[i]);
+				for (V3D e : ed)
+					if (searched.equals(e))
+						vert[i] = ed.indexOf(e);
+			}
+		});
+
+		ArrayList<int[]> vert = new ArrayList<int[]>();
+
+		vertices.forEach(v1 -> {
+			boolean isUnique = true;
+			for (int[] v2 : vert) {
+				if ((v1[0] == v2[0] && v1[1] == v2[1]) || (v1[0] == v2[1] && v1[1] == v2[0])) {
+					isUnique = false;
+					break;
+				}
+			}
+			if (isUnique || vert.size() == 0)
+				vert.add(v1);
+		});
+		console.log("Found " + (vertices.size() - vert.size()) + " duplicates...");
+		console.log("Edges have been reduced to: " + vert.size() + "!");
+		console.log("\nStarting with: " + faces.size() + " faces..");
+
+		faces.forEach(face -> {
+			for (int i = 0; i < face.length; i++) {
+				V3D searched = edges.get(face[i]);
+				for (V3D e : ed)
+					if (searched.equals(e))
+						face[i] = ed.indexOf(e);
+			}
+		});
+
+		ArrayList<int[]> face = new ArrayList<int[]>();
+
+		faces.forEach(v1 -> {
+			boolean isUnique = true;
+			for (int[] v2 : face) {
+				if ((v1[0] == v2[0] && v1[1] == v2[1] && v1[2] == v2[2])
+						|| (v1[0] == v2[0] && v1[2] == v2[1] && v1[1] == v2[2])
+						|| (v1[1] == v2[0] && v1[0] == v2[1] && v1[2] == v2[2])
+						|| (v1[1] == v2[0] && v1[2] == v2[1] && v1[0] == v2[2])
+						|| (v1[2] == v2[0] && v1[1] == v2[1] && v1[0] == v2[2])
+						|| (v1[2] == v2[0] && v1[0] == v2[1] && v1[1] == v2[2])) {
+					isUnique = false;
+					break;
+				}
+			}
+			if (isUnique || face.size() == 0)
+				face.add(v1);
+		});
+		
+		console.log("Found " + (faces.size() - face.size()) + " duplicates...");
+		console.log("Edges have been reduced to: " + face.size() + "!");
 
 		edges.clear();
 		edges.addAll(ed);
-		console.log("Found " + IndexOfDupes.size()+" duplicates!");
-		console.log("Edges have been reduced to: " + edges.size() + " !");
+		vertices.clear();
+		vertices.addAll(vert);
+		faces.clear();
+		faces.addAll(face);
 		
+		console.log("\nFinished cleaning up the Model!");
+		console.timestamp(time);
 	}
 
 	public void rotateX(double angle) {
