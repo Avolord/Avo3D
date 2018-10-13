@@ -1,6 +1,7 @@
 package screen;
 
 import obj3D.Obj3D;
+import compute.Projection;
 import compute.V3D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -62,25 +63,49 @@ public class JFXdraw extends Application {
             public void handle(KeyEvent event) {
             	switch(event.getCode()) {
             	case UP:
-            		V3D.Zoom(0.1);
+            		Projection.rotateCamera(-10,0,0);
             	break;
             	case DOWN:
-            		V3D.Zoom(-0.1);
+            		Projection.rotateCamera(10,0,0);
+            	break;
+            	case LEFT:
+            		Projection.rotateCamera(0,10,0);
+            	break;
+            	case RIGHT:
+            		Projection.rotateCamera(0,-10,0);
             	break;
             	case D:
-            		V3D.moveCamera(-10,0,0);
+            		Projection.moveCamera(-10,0,0);
             	break;
             	case A:
-            		V3D.moveCamera(10,0,0);
+            		Projection.moveCamera(10,0,0);
             	break;
             	case W:
-            		V3D.moveCamera(0,10,0);
+            		Projection.moveCamera(0,0,10);
             	break;
             	case S:
-            		V3D.moveCamera(0,-10,0);
+            		Projection.moveCamera(0,0,-10);
+            	break;
+            	case SPACE:
+            		Projection.moveCamera(0,10,0);
+            	break;
+            	case G:
+            		Projection.moveCamera(0,-10,0);
             	break;
             	case ENTER:
             		primaryStage.close();
+            	break;
+            	case NUMPAD8:
+            		Projection.moveViewer(0,0,10);
+            	break;
+            	case NUMPAD2:
+            		Projection.moveViewer(0,0,-10);
+            	break;
+            	case NUMPAD4:
+            		Projection.moveViewer(-10,0,0);
+            	break;
+            	case NUMPAD6:
+            		Projection.moveViewer(10,0,0);
             	break;
 				default:
 					break;

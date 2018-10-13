@@ -39,12 +39,12 @@ public class STL extends Obj3D {
 		}
 
 		Integer PointsPerFace = (int) (edges.size() / countLoops);
-		console.log("PPF :" + PointsPerFace);
+		console.log("Points per Face = " + PointsPerFace);
 
 		for (int i = 0; i < edges.size(); i += PointsPerFace) {
-			
+
 			int[] faceIndexes = new int[PointsPerFace];
-			
+
 			for (int j = 0; j < PointsPerFace; j++) {
 				faceIndexes[j] = i + j;
 				if (j < PointsPerFace - 1)
@@ -55,5 +55,7 @@ public class STL extends Obj3D {
 
 			faces.add(faceIndexes);
 		}
+		cleanUpData();
 	}
+	
 }

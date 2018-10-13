@@ -29,7 +29,7 @@ public class AvoReader {
 			br = new BufferedReader(fr);
 			System.out.println("Sucessfully loaded data!");
 		} catch (FileNotFoundException e) {
-			System.out.println("Error! Data couldn't be loaded!");
+			System.out.println("Error! File couldn't be loaded!");
 			e.printStackTrace();
 		}
 	}

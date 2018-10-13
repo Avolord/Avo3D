@@ -2,9 +2,11 @@ package obj3D;
 
 import java.util.ArrayList;
 
+import compute.Projection;
 import compute.V3D;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
+import main.console;
 import screen.ObjectBuffer2D;
 
 public class Obj3D {
@@ -35,7 +37,7 @@ public class Obj3D {
 	public static void PolyLine3D(ArrayList<V3D> pts) {
 		Point2D[] points = new Point2D[pts.size()];
 		for (int i = 0; i < pts.size(); i++) {
-			points[i] = pts.get(i).Orthographic();
+			points[i] = Projection.Perspective(pts.get(i));
 		}
 		buffer.PolyLine(Color.BLACK, points);
 	}
@@ -43,7 +45,7 @@ public class Obj3D {
 	public void draw() {
 		Point2D[] points = new Point2D[edges.size()];
 		for (int i = 0; i < edges.size(); i++) {
-			points[i] = edges.get(i).Orthographic();
+			points[i] = Projection.Perspective(edges.get(i));
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
@@ -60,7 +62,7 @@ public class Obj3D {
 	public void draw(double size_factor) {
 		Point2D[] points = new Point2D[edges.size()];
 		for (int i = 0; i < edges.size(); i++) {
-			points[i] = edges.get(i).Orthographic().multiply(size_factor);
+			points[i] = Projection.Perspective(edges.get(i)).multiply(size_factor);
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
@@ -76,16 +78,40 @@ public class Obj3D {
 
 	public void drawEdges() {
 		edges.forEach(edge -> {
-			Point2D p = edge.Orthographic();
+			Point2D p = Projection.Perspective(edge);
 			buffer.circle(p.getX(), p.getY(), 1);
 		});
 	}
 
 	public void drawEdges(double size_factor) {
 		edges.forEach(edge -> {
-			Point2D p = edge.Orthographic();
-			buffer.circle(p.getX() * size_factor, p.getY() * size_factor, 1);
+			Point2D p = Projection.Perspective(edge).multiply(size_factor);
+			buffer.circle(p.getX(), p.getY(), 1);
 		});
+	}
+
+	protected void cleanUpData() {
+		console.log("starting with: " + edges.size() + " edges!");
+		ArrayList<V3D> ed = new ArrayList<V3D>();
+		ArrayList<Integer> IndexOfDupes = new ArrayList<Integer>();
+
+		edges.forEach(a -> {
+			boolean isUnique = true;
+			for (int i = 0; i < ed.size(); i++) {
+				if (ed.get(i).equals(a))
+					isUnique = false;
+			}
+			if (isUnique || ed.size() == 0)
+				ed.add(a);
+			else
+				IndexOfDupes.add(edges.indexOf(a));
+		});
+
+		edges.clear();
+		edges.addAll(ed);
+		console.log("Found " + IndexOfDupes.size()+" duplicates!");
+		console.log("Edges have been reduced to: " + edges.size() + " !");
+		
 	}
 
 	public void rotateX(double angle) {
