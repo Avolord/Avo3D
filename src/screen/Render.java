@@ -8,7 +8,7 @@ public class Render {
 	public static V3D p2 = new V3D(50, 50, 50);
 	//public static Box box = new Box(-50, -50, -50, 100, 100, 100);
 	//public static Sphere sphere = new Sphere(0, 0, 0, 100);
-	public static STL stl = new STL("G:\\EclipsePrograms\\Java\\Avo3D\\data\\a.stl");
+	public static STL stl = new STL("G:\\EclipsePrograms\\Java\\Avo3D\\data\\piramide_palenque.stl");
 
 	public static void main() {
 
