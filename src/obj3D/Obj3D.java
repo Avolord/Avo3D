@@ -1,7 +1,6 @@
 package obj3D;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import compute.Projection;
 import compute.V3D;
@@ -16,7 +15,7 @@ public class Obj3D {
 	protected ArrayList<V3D> edges = null;
 	protected ArrayList<int[]> vertices = null;
 	protected ArrayList<int[]> faces = null;
-	private Color faceColor = Color.web("rgba(255,0,0,0.2)");
+	private Color faceColor = Color.web("rgba(255,0,0,0.4)");
 	private Color vertColor = Color.BLACK;
 
 	protected Obj3D(int edges, int vertices, int faces) {
@@ -141,8 +140,7 @@ public class Obj3D {
 				vert.add(v1);
 		});
 		console.log("Found " + (vertices.size() - vert.size()) + " duplicates...");
-		console.log("Edges have been reduced to: " + vert.size() + "!");
-		console.log("\nStarting with: " + faces.size() + " faces..");
+		console.log("Vertices have been reduced to: " + vert.size() + "!");
 
 		faces.forEach(face -> {
 			for (int i = 0; i < face.length; i++) {
@@ -153,34 +151,10 @@ public class Obj3D {
 			}
 		});
 
-		ArrayList<int[]> face = new ArrayList<int[]>();
-
-		faces.forEach(v1 -> {
-			boolean isUnique = true;
-			for (int[] v2 : face) {
-				if ((v1[0] == v2[0] && v1[1] == v2[1] && v1[2] == v2[2])
-						|| (v1[0] == v2[0] && v1[2] == v2[1] && v1[1] == v2[2])
-						|| (v1[1] == v2[0] && v1[0] == v2[1] && v1[2] == v2[2])
-						|| (v1[1] == v2[0] && v1[2] == v2[1] && v1[0] == v2[2])
-						|| (v1[2] == v2[0] && v1[1] == v2[1] && v1[0] == v2[2])
-						|| (v1[2] == v2[0] && v1[0] == v2[1] && v1[1] == v2[2])) {
-					isUnique = false;
-					break;
-				}
-			}
-			if (isUnique || face.size() == 0)
-				face.add(v1);
-		});
-		
-		console.log("Found " + (faces.size() - face.size()) + " duplicates...");
-		console.log("Edges have been reduced to: " + face.size() + "!");
-
 		edges.clear();
 		edges.addAll(ed);
 		vertices.clear();
 		vertices.addAll(vert);
-		faces.clear();
-		faces.addAll(face);
 		
 		console.log("\nFinished cleaning up the Model!");
 		console.timestamp(time);

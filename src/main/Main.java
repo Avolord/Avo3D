@@ -1,9 +1,5 @@
 package main;
 
-import java.util.Arrays;
-
-import compute.Projection;
-import compute.V3D;
 import screen.JFXdraw;
 import screen.ObjectBuffer2D;
 
