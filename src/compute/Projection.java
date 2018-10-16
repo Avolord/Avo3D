@@ -96,11 +96,17 @@ public class Projection {
 	}
 	
 	public static Point2D simpleOrthographic(V3D vec) {
+		if(!inFrustum(vec)) {
+			return null;
+		}
 		Matrix result = SimpleOrthographic.mult(vec);
 		return new Point2D(result.getData(0,0), result.getData(1,0));
 	}
 	
 	public static Point2D weakPerspective(V3D vec) {
+		if(!inFrustum(vec)) {
+			return null;
+		}
 		Matrix result = Matrix.fromArray(new double[][] {
 			{1/vec.getData(2,0), 0, 0},
 			{0, 1/vec.getData(2,0), 0}
@@ -109,11 +115,17 @@ public class Projection {
 	}
 	
 	public static Point2D Cabinet(V3D vec) {
+		if(!inFrustum(vec)) {
+			return null;
+		}
 		Matrix result = Cabinet.mult(vec);
 		return new Point2D(result.getData(0,0), result.getData(1,0));
 	}
 	
 	public static Point2D Orthographic(V3D vec) {
+		if(!inFrustum(vec)) {
+			return null;
+		}
 		Matrix result = Orthographic.mult(Matrix.sub(vec, CameraPos));
 		return new Point2D(result.getData(0,0), result.getData(1,0));
 	}
@@ -158,6 +170,9 @@ public class Projection {
 	}
 	
 	public static Point2D Perspective_(V3D vec) {
+		if(!inFrustum(vec)) {
+			return null;
+		}
 		double ex = ViewerDistance.getX();
 		double ey = ViewerDistance.getY();
 		double ez = ViewerDistance.getZ();
