@@ -1,11 +1,19 @@
 package obj3D;
 
+import java.util.ArrayList;
+
 import compute.V3D;
 
 public class Sphere extends Obj3D {
+	private int amount = 25;
+	
 	public Sphere(double x, double y, double z, double radius) {
 		super();
-		int amount = 25;
+		initSphere(x, y, z, radius, amount);
+	}
+
+	public Sphere(double x, double y, double z, double radius, int amount) {
+		super();
 		initSphere(x, y, z, radius, amount);
 	}
 
@@ -27,8 +35,19 @@ public class Sphere extends Obj3D {
 			for (int j = 1; j < amount * 2; j++) {
 				vertices.add(new int[] { i + j * amount, i + 1 + j * amount });
 				vertices.add(new int[] { i + (j - 1) * amount, i + j * amount });
+				faces.add(new int[] { i + 1 + j * amount, i + j * amount, i + (j - 1) * amount,
+						i + 1 + (j - 1) * amount });
 			}
 		}
-		cleanUpData();
+		cleanFaces();
+		// cleanUpData();
+	}
+
+	private void cleanFaces() {
+		//faces = new ArrayList<int[]>(faces.subList(0, 48));
+		for (int i = faces.size() - 1; i >= 49; i--) {
+			if(i % 49 == 0)
+				faces.remove(i);
+		}
 	}
 }

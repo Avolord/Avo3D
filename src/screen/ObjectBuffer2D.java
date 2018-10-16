@@ -354,6 +354,16 @@ public class ObjectBuffer2D {
 		}	
 		ctx.fillPolygon(valX, valY, p2ds.length);
 	}
+	
+	public void write(String text, double x, double y) {
+		ctx.setFill(Color.BLACK);
+		ctx.fillText(text, x, y);
+	}
+	
+	public void fps(double FPS) {
+		ctx.setFill(Color.RED);
+		ctx.fillText(Double.toString(FPS), -transX+10, -transY+10);
+	}
 
 	public Canvas getC() {
 		return c;

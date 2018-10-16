@@ -76,6 +76,10 @@ public class V3D extends Matrix {
 		return (this.getX() == v2.getX() && this.getY() == v2.getY() && this.getZ() == v2.getZ());
 	}
 	
+	public V3D dupe() {
+		return new V3D(data[0][0], data[1][0], data[2][0], data[3][0]);
+	}
+	
 	public double distance(V3D vector) {
 		double dx = this.getX() - vector.getX();
 		double dy = this.getY() - vector.getY();
@@ -90,7 +94,31 @@ public class V3D extends Matrix {
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 	
+	public double skalar(V3D vector) {
+		return this.getData(0, 0) * vector.getData(0, 0) + this.getData(1, 0) * vector.getData(1, 0)
+				+ this.getData(2, 0) * vector.getData(2, 0);
+	}
+	
+	public static V3D add(V3D vectorA, V3D vectorB) {
+		return new V3D(
+			vectorA.getX() + vectorB.getX(),
+			vectorA.getY() + vectorB.getY(),
+			vectorA.getZ() + vectorB.getZ()
+			);
+	}
+	
+	public static V3D sub(V3D vectorA, V3D vectorB) {
+		return new V3D(
+			vectorA.getX() - vectorB.getX(),
+			vectorA.getY() - vectorB.getY(),
+			vectorA.getZ() - vectorB.getZ()
+			);
+	}
+	
 	public static V3D rotateX(V3D vector, double degree) {
+		if(degree == 0) {
+			return vector.dupe();
+		}
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{1, 0, 0, 0},
@@ -102,6 +130,9 @@ public class V3D extends Matrix {
 	}
 	
 	public void rotateX(double degree) {
+		if(degree == 0) {
+			return;
+		}
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{1, 0, 0, 0},
@@ -112,7 +143,24 @@ public class V3D extends Matrix {
 		this.data = rotate.mult(this).data;
 	}
 	
+	public void rotateX(double angle, boolean rad) {
+		if(angle == 0) {
+			return;
+		}
+		angle = (rad) ? angle : Math.toRadians(angle);
+		Matrix rotate = Matrix.fromArray(new double[][] {
+			{1, 0, 0, 0},
+			{0, Math.cos(angle), -Math.sin(angle), 0},
+			{0, Math.sin(angle), Math.cos(angle), 0},
+			{0, 0, 0, 1}
+		});
+		this.data = rotate.mult(this).data;
+	}
+	
 	public static V3D rotateY(V3D vector, double degree) {
+		if(degree == 0) {
+			return vector.dupe();
+		}
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), 0, Math.sin(angle), 0},
@@ -124,6 +172,9 @@ public class V3D extends Matrix {
 	}
 	
 	public void rotateY(double degree) {
+		if(degree == 0) {
+			return;
+		}
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), 0, Math.sin(angle), 0},
@@ -134,7 +185,24 @@ public class V3D extends Matrix {
 		this.data = rotate.mult(this).data;
 	}
 	
+	public void rotateY(double angle, boolean rad) {
+		if(angle == 0) {
+			return;
+		}
+		angle = (rad) ? angle : Math.toRadians(angle);
+		Matrix rotate = Matrix.fromArray(new double[][] {
+			{Math.cos(angle), 0, Math.sin(angle), 0},
+			{0, 1, 0, 0},
+			{-Math.sin(angle), 0, Math.cos(angle), 0},
+			{0, 0, 0, 1}
+		});
+		this.data = rotate.mult(this).data;
+	}
+	
 	public static V3D rotateZ(V3D vector, double degree) {
+		if(degree == 0) {
+			return vector.dupe();
+		}
 		double angle = Math.toRadians(degree);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), -Math.sin(angle), 0, 0},
@@ -146,7 +214,24 @@ public class V3D extends Matrix {
 	}
 	
 	public void rotateZ(double degree) {
+		if(degree == 0) {
+			return;
+		}
 		double angle = Math.toRadians(degree);
+		Matrix rotate = Matrix.fromArray(new double[][] {
+			{Math.cos(angle), -Math.sin(angle), 0, 0},
+			{Math.sin(angle), Math.cos(angle), 0, 0},
+			{0, 0, 1, 0},
+			{0, 0, 0, 1}
+		});
+		this.data = rotate.mult(this).data;
+	}
+	
+	public void rotateZ(double angle, boolean rad) {
+		if(angle == 0) {
+			return;
+		}
+		angle = (rad) ? angle : Math.toRadians(angle);
 		Matrix rotate = Matrix.fromArray(new double[][] {
 			{Math.cos(angle), -Math.sin(angle), 0, 0},
 			{Math.sin(angle), Math.cos(angle), 0, 0},

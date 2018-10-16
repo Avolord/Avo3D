@@ -49,12 +49,18 @@ public class Obj3D {
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
+			boolean visible = true;
 			for (int i = 0; i < face.length; i++) {
-				faceP[i] = points[face[i]];
+				if((faceP[i] = points[face[i]]) == null) {
+					visible = false;
+					break;
+				}
 			}
+			if(visible)
 			buffer.fillPoly(faceColor, faceP);
 		});
 		vertices.forEach(vert -> {
+			if(points[vert[0]] != null && points[vert[1]] != null)
 			buffer.line(points[vert[0]], points[vert[1]], vertColor);
 		});
 	}
@@ -96,10 +102,14 @@ public class Obj3D {
 		console.log("\nStarting with: " + edges.size() + " edges!");
 		ArrayList<V3D> ed = new ArrayList<V3D>();
 		ArrayList<int[]> IndexOfDupes = new ArrayList<int[]>();
+		int process_unit = (int) (edges.size() / 10);
 
 		edges.forEach(a -> {
 			boolean isUnique = true;
 			int index = -1;
+			if(edges.indexOf(a) % process_unit == 0) {
+				System.out.print("| ");
+			}
 			for (int i = 0; i < ed.size(); i++) {
 				if (ed.get(i).equals(a)) {
 					isUnique = false;
@@ -113,11 +123,16 @@ public class Obj3D {
 				IndexOfDupes.add(new int[] { edges.indexOf(a), index });
 		});
 
-		console.log("Found " + IndexOfDupes.size() + " duplicates...");
+		console.log("\nFound " + IndexOfDupes.size() + " duplicates...");
 		console.log("Edges have been reduced to: " + ed.size() + "!");
 		console.log("\nStarting with: " + vertices.size() + " vertices..");
+		console.log("Reconnecting vertices...");
+		int process_unit2 = (int) (vertices.size() / 10);
 
 		vertices.forEach(vert -> {
+			if(vertices.indexOf(vert) % process_unit2 == 0) {
+				System.out.print("| ");
+			}
 			for (int i = 0; i < vert.length; i++) {
 				V3D searched = edges.get(vert[i]);
 				for (V3D e : ed)
@@ -126,9 +141,14 @@ public class Obj3D {
 			}
 		});
 
+		console.log("\nVertices reconnected!");
+		console.log("\nSearching for duplicates!");
 		ArrayList<int[]> vert = new ArrayList<int[]>();
 
 		vertices.forEach(v1 -> {
+			if(vertices.indexOf(v1) % process_unit2 == 0) {
+				System.out.print("| ");
+			}
 			boolean isUnique = true;
 			for (int[] v2 : vert) {
 				if ((v1[0] == v2[0] && v1[1] == v2[1]) || (v1[0] == v2[1] && v1[1] == v2[0])) {
@@ -139,10 +159,15 @@ public class Obj3D {
 			if (isUnique || vert.size() == 0)
 				vert.add(v1);
 		});
-		console.log("Found " + (vertices.size() - vert.size()) + " duplicates...");
+		console.log("\nFound " + (vertices.size() - vert.size()) + " duplicates...");
 		console.log("Vertices have been reduced to: " + vert.size() + "!");
+		console.log("\nReconnecting faces...");
+		int process_unit3 = (int) (faces.size() / 10);
 
 		faces.forEach(face -> {
+			if(faces.indexOf(face) % process_unit3 == 0) {
+				System.out.print("| ");
+			}
 			for (int i = 0; i < face.length; i++) {
 				V3D searched = edges.get(face[i]);
 				for (V3D e : ed)
@@ -150,7 +175,7 @@ public class Obj3D {
 						face[i] = ed.indexOf(e);
 			}
 		});
-
+		console.log("\nFaces reconnected!");
 		edges.clear();
 		edges.addAll(ed);
 		vertices.clear();
