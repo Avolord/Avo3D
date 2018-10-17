@@ -7,6 +7,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.*;
@@ -70,6 +71,7 @@ public class JFXdraw extends Application {
 					counter = 0;
 					buffer2D.clear();
 					buffer2D.fps(Math.floor(fps));
+					Projection.smoothMove(5);
 					Render.main();
 				}
 			}
@@ -80,56 +82,17 @@ public class JFXdraw extends Application {
 
 			@Override
 			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-				case UP:
-					Projection.rotateCamera(-5, 0, 0);
-					break;
-				case DOWN:
-					Projection.rotateCamera(5, 0, 0);
-					break;
-				case LEFT:
-					Projection.rotateCamera(0, 5, 0);
-					break;
-				case RIGHT:
-					Projection.rotateCamera(0, -5, 0);
-					break;
-				case D:
-					Projection.moveCamera(-5, 0, 0);
-					break;
-				case A:
-					Projection.moveCamera(5, 0, 0);
-					break;
-				case W:
-					Projection.moveCamera(0, 0, 5);
-					break;
-				case S:
-					Projection.moveCamera(0, 0, -5);
-					break;
-				case SPACE:
-					Projection.moveCamera(0, 5, 0);
-					break;
-				case G:
-					Projection.moveCamera(0, -5, 0);
-					break;
-				case ENTER:
+				Projection.getCamera().keyInput(event.getCode(), true);
+				if(event.getCode() == KeyCode.ENTER)
 					primaryStage.close();
-					console.log("average FPS: "+averageFPS);
-					break;
-				case NUMPAD8:
-					Projection.moveViewer(0, 0, 10);
-					break;
-				case NUMPAD2:
-					Projection.moveViewer(0, 0, -10);
-					break;
-				case NUMPAD4:
-					Projection.moveViewer(-10, 0, 0);
-					break;
-				case NUMPAD6:
-					Projection.moveViewer(10, 0, 0);
-					break;
-				default:
-					break;
-				}
+			}
+		});
+		
+		scene.setOnKeyReleased(new EventHandler<KeyEvent>() {
+
+			@Override
+			public void handle(KeyEvent event) {
+				Projection.getCamera().keyInput(event.getCode(), false);
 			}
 		});
 
