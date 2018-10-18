@@ -55,7 +55,7 @@ public class JFXdraw extends Application {
 		Obj3D.initBuffer(buffer);
 
 		buffer2D.translate(buffer.getWidth() / 2, buffer.getHeight() / 2);
-		Render.rotate(0, 0, 0);
+		//Render.rotate(0, 0, 0);
 		launch(args);
 	}
 
@@ -74,7 +74,7 @@ public class JFXdraw extends Application {
 					counter = 0;
 					buffer2D.clear();
 					computeFPS();
-					Obj3D.getProjection().smoothMove(5);
+					Obj3D.getProjection().smoothMove(10);
 					Render.main();
 				}
 			}

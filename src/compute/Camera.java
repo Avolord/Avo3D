@@ -93,25 +93,25 @@ public class Camera {
 
 	public void smoothMove(double value) {
 		if (left)
-			position.data[0][0] += value;
+			position.add(getMovementVec(1,0,0,value));
 		if (right)
-			position.data[0][0] -= value;
+			position.add(getMovementVec(-1,0,0,value));
 		if (up)
-			position.data[1][0] += value;
+			position.add(getMovementVec(0,1,0,value));
 		if (down)
-			position.data[1][0] -= value;
+			position.add(getMovementVec(0,-1,0,value));
 		if (forwards)
-			position.data[2][0] += value;
+			position.add(getMovementVec(0,0,1,value));
 		if (backwards)
-			position.data[2][0] -= value;
+			position.add(getMovementVec(0,0,-1,value));
 		if (upRot)
-			rotation.data[0][0] -= value;
+			rotation.data[0][0] -= value/2;
 		if (downRot)
-			rotation.data[0][0] += value;
+			rotation.data[0][0] += value/2;
 		if (leftRot)
-			rotation.data[1][0] += value;
+			rotation.data[1][0] += value/2;
 		if (rightRot)
-			rotation.data[1][0] -= value;
+			rotation.data[1][0] -= value/2;
 	}
 
 	public void keyInput(KeyCode code, boolean activate) {
@@ -259,6 +259,15 @@ public class Camera {
 		cv.rotateY(rotation.getY());
 		cv.rotateZ(rotation.getZ());
 		return cv;
+	}
+	
+	private V3D getMovementVec(double x, double y, double z, double value) {
+		V3D vec = new V3D(x * value, y * value, z * value);
+		vec.rotateX(rotation.getX());
+		vec.rotateY(rotation.getY());
+		vec.rotateZ(rotation.getZ());
+		//vec.log();
+		return vec;
 	}
 
 	public double getXRot() {

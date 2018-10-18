@@ -69,31 +69,43 @@ public class Obj3D {
 	public void draw(double size_factor) {
 		Point2D[] points = new Point2D[edges.size()];
 		for (int i = 0; i < edges.size(); i++) {
-			points[i] = projection.Perspective(edges.get(i)).multiply(size_factor);
+			points[i] = projection.Perspective(edges.get(i));
+			if (points[i] != null)
+				points[i] = points[i].multiply(size_factor);
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
+			boolean visible = true;
 			for (int i = 0; i < face.length; i++) {
-				faceP[i] = points[face[i]];
+				if ((faceP[i] = points[face[i]]) == null) {
+					visible = false;
+					break;
+				}
 			}
-			buffer.fillPoly(faceColor, faceP);
+			if (visible)
+				buffer.fillPoly(faceColor, faceP);
 		});
 		vertices.forEach(vert -> {
-			buffer.line(points[vert[0]], points[vert[1]], vertColor);
+			if (points[vert[0]] != null && points[vert[1]] != null)
+				buffer.line(points[vert[0]], points[vert[1]], vertColor);
 		});
 	}
 
 	public void drawEdges() {
 		edges.forEach(edge -> {
 			Point2D p = projection.Perspective(edge);
-			buffer.circle(p.getX(), p.getY(), 1);
+			if (p != null)
+				buffer.circle(p.getX(), p.getY(), 1);
 		});
 	}
 
 	public void drawEdges(double size_factor) {
 		edges.forEach(edge -> {
-			Point2D p = projection.Perspective(edge).multiply(size_factor);
-			buffer.circle(p.getX(), p.getY(), 1);
+			Point2D p = projection.Perspective(edge);
+			if (p != null) {
+				p = p.multiply(size_factor);
+				buffer.circle(p.getX(), p.getY(), 1);
+			}
 		});
 	}
 
