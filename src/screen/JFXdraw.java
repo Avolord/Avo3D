@@ -1,7 +1,6 @@
 package screen;
 
 import obj3D.Obj3D;
-import compute.Projection;
 import compute.V3D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -40,6 +39,13 @@ public class JFXdraw extends Application {
 	public static ObjectBuffer2D getBuffer2D() {
 		return buffer2D;
 	}
+	
+	public static void computeFPS() {
+		double fps = 60 / FPS /((System.nanoTime() - FPStime) / 1E9);
+		FPStime = System.nanoTime();
+		averageFPS = (averageFPS + fps) / 2d;
+		buffer2D.fps(Math.floor(fps));
+	}
 
 	public static void start(String[] args, int width, int height) {
 		ObjectBuffer2D buffer = new ObjectBuffer2D(width, height);
@@ -65,13 +71,10 @@ public class JFXdraw extends Application {
 			public void handle(long now) {
 				counter++;
 				if (counter >= 60 / FPS) {
-					double fps = 60 / FPS /((System.nanoTime() - FPStime) / 1E9);
-					FPStime = System.nanoTime();
-					averageFPS = (averageFPS + fps) / 2d;
 					counter = 0;
 					buffer2D.clear();
-					buffer2D.fps(Math.floor(fps));
-					Projection.smoothMove(5);
+					computeFPS();
+					Obj3D.getProjection().smoothMove(5);
 					Render.main();
 				}
 			}
@@ -82,9 +85,11 @@ public class JFXdraw extends Application {
 
 			@Override
 			public void handle(KeyEvent event) {
-				Projection.getCamera().keyInput(event.getCode(), true);
-				if(event.getCode() == KeyCode.ENTER)
+				Obj3D.getProjection().keyInput(event.getCode(), true);
+				if(event.getCode() == KeyCode.ENTER) {
 					primaryStage.close();
+					console.log("Average FPS: "+averageFPS);
+				}
 			}
 		});
 		
@@ -92,7 +97,7 @@ public class JFXdraw extends Application {
 
 			@Override
 			public void handle(KeyEvent event) {
-				Projection.getCamera().keyInput(event.getCode(), false);
+				Obj3D.getProjection().keyInput(event.getCode(), false);
 			}
 		});
 

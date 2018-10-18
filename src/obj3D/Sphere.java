@@ -1,7 +1,5 @@
 package obj3D;
 
-import java.util.ArrayList;
-
 import compute.V3D;
 
 public class Sphere extends Obj3D {

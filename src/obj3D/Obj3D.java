@@ -11,6 +11,7 @@ import screen.ObjectBuffer2D;
 
 public class Obj3D {
 	private static ObjectBuffer2D buffer = null;
+	private static Projection projection = new Projection(0d, 0d, -200d, 0d, 0d, 0d);
 
 	protected ArrayList<V3D> edges = null;
 	protected ArrayList<int[]> vertices = null;
@@ -37,7 +38,7 @@ public class Obj3D {
 	public static void PolyLine3D(ArrayList<V3D> pts) {
 		Point2D[] points = new Point2D[pts.size()];
 		for (int i = 0; i < pts.size(); i++) {
-			points[i] = Projection.Perspective(pts.get(i));
+			points[i] = projection.Perspective(pts.get(i));
 		}
 		buffer.PolyLine(Color.BLACK, points);
 	}
@@ -45,7 +46,7 @@ public class Obj3D {
 	public void draw() {
 		Point2D[] points = new Point2D[edges.size()];
 		for (int i = 0; i < edges.size(); i++) {
-			points[i] = Projection.Perspective(edges.get(i));
+			points[i] = projection.Perspective(edges.get(i));
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
@@ -68,7 +69,7 @@ public class Obj3D {
 	public void draw(double size_factor) {
 		Point2D[] points = new Point2D[edges.size()];
 		for (int i = 0; i < edges.size(); i++) {
-			points[i] = Projection.Perspective(edges.get(i)).multiply(size_factor);
+			points[i] = projection.Perspective(edges.get(i)).multiply(size_factor);
 		}
 		faces.forEach(face -> {
 			Point2D[] faceP = new Point2D[face.length];
@@ -84,14 +85,14 @@ public class Obj3D {
 
 	public void drawEdges() {
 		edges.forEach(edge -> {
-			Point2D p = Projection.Perspective(edge);
+			Point2D p = projection.Perspective(edge);
 			buffer.circle(p.getX(), p.getY(), 1);
 		});
 	}
 
 	public void drawEdges(double size_factor) {
 		edges.forEach(edge -> {
-			Point2D p = Projection.Perspective(edge).multiply(size_factor);
+			Point2D p = projection.Perspective(edge).multiply(size_factor);
 			buffer.circle(p.getX(), p.getY(), 1);
 		});
 	}
@@ -243,5 +244,13 @@ public class Obj3D {
 
 	public void setVertColor(String vertColor) {
 		this.vertColor = Color.web(vertColor);
+	}
+
+	public static Projection getProjection() {
+		return projection;
+	}
+
+	public static void setProjection(Projection projection) {
+		Obj3D.projection = projection;
 	}
 }

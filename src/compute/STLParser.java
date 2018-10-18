@@ -239,7 +239,7 @@ public class STLParser {
 					for(int i = 0; i < nvec.length; i++){
 						nvec[i] = Float.intBitsToFloat(Integer.reverseBytes(in.readInt()));
 					}
-					V3D normal = new V3D(nvec[0],nvec[1],nvec[2]); // not used (yet)
+					//V3D normal = new V3D(nvec[0],nvec[1],nvec[2]); // not used (yet)
 					V3D[] vertices = new V3D[3];
 					for (int v = 0; v < vertices.length; v++) {
 						float[] vals = new float[3];
@@ -248,7 +248,7 @@ public class STLParser {
 						}
 						vertices[v] = new V3D(vals[0], vals[1], vals[2]);
 					}
-					short attribute = Short.reverseBytes(in.readShort()); // not used (yet)
+					//short attribute = Short.reverseBytes(in.readShort()); // not used (yet)
 					triangles.add(new V3D[] {vertices[0], vertices[1], vertices[2]});
 				}
 			}catch(Exception ex){
