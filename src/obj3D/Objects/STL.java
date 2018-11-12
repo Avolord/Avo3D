@@ -1,4 +1,4 @@
-package obj3D;
+package obj3D.Objects;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -7,6 +7,7 @@ import java.util.List;
 
 import compute.STLParser;
 import compute.V3D;
+import obj3D.Obj3D;
 
 public class STL extends Obj3D {
 //	public STL(String path) {

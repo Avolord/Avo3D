@@ -6,6 +6,7 @@ import screen.ObjectBuffer2D;
 public class V3D extends Matrix {
 			
 	private static ObjectBuffer2D buffer = JFXdraw.getBuffer2D();
+	public static V3D ZERO = new V3D(0,0,0,0);
 	
 	public V3D() {
 		super(4, 1);
@@ -75,6 +76,10 @@ public class V3D extends Matrix {
 		return (this.getX() == v2.getX() && this.getY() == v2.getY() && this.getZ() == v2.getZ());
 	}
 	
+	public double value() {
+		return Math.sqrt(data[0][0] * data[0][0] + data[1][0] * data[1][0] + data[2][0] * data[2][0]);
+	}
+	
 	public V3D dupe() {
 		return new V3D(data[0][0], data[1][0], data[2][0], data[3][0]);
 	}
@@ -111,6 +116,14 @@ public class V3D extends Matrix {
 			vectorA.getX() - vectorB.getX(),
 			vectorA.getY() - vectorB.getY(),
 			vectorA.getZ() - vectorB.getZ()
+			);
+	}
+	
+	public static V3D skalar_mult(V3D vectorA, double n) {
+		return new V3D(
+			vectorA.getX()*n,
+			vectorA.getY()*n,
+			vectorA.getZ()*n
 			);
 	}
 	

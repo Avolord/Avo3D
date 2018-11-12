@@ -1,6 +1,7 @@
-package obj3D;
+package obj3D.Objects;
 
 import compute.V3D;
+import obj3D.Obj3D;
 
 public class Box extends Obj3D {
 	public Box(double x, double y, double z, double w, double h, double d) {

@@ -1,17 +1,19 @@
 package compute;
 
+import java.util.Arrays;
+
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
+import main.console;
 
 public class Camera {
-	public boolean left, right, up, down, forwards, backwards, leftRot, rightRot, upRot, downRot;
-	protected V3D position = null;
-	protected V3D rotation = null;
-	protected V3D RecordingSurface = null;
+	public boolean left, right, up, down, forwards, backwards, leftRot, rightRot, upRot, downRot; // Camera Movement
+	protected V3D position = null; // Camera position
+	protected V3D rotation = null; // Camera rotation
+	protected V3D RecordingSurface = null; //
 	protected V3D ViewerDistance = null;
 	protected Point2D DisplaySize = null;
-	protected V3D[] frustum_normals = initFrustumNormals();
-	protected V3D[] frustum = initFrustum();
+	protected Plane[] frustum = initFrustum();
 	protected double[] OrthographicPlanes = null;
 
 	public Camera(double PosX, double PosY, double PosZ, double RotX, double RotY, double RotZ) {
@@ -29,26 +31,34 @@ public class Camera {
 		OrthographicPlanes = new double[] { 1d, -1d, 1d, -1d, 0.1d, 1d };
 	}
 
-	private static V3D[] initFrustumNormals() {
-		V3D[] fn = new V3D[6];
-		fn[0] = new V3D(-1, 0, 0);
-		fn[1] = new V3D(1, 0, 0);
-		fn[2] = new V3D(0, -1, 0);
-		fn[3] = new V3D(0, 1, 0);
-		fn[4] = new V3D(0, 0, 1);
-		fn[5] = new V3D(0, 0, -1);
-		return fn;
-	}
-
-	private static V3D[] initFrustum() {
-		V3D[] fn = new V3D[6];
-		fn[0] = new V3D(800, 0, 0);
-		fn[1] = new V3D(-800, 0, 0);
-		fn[2] = new V3D(0, 800, 0);
-		fn[3] = new V3D(0, -800, 0);
-		fn[4] = new V3D(0, 0, 20);
-		fn[5] = new V3D(0, 0, 1000);
-		return fn;
+	private static Plane[] initFrustum() {
+		Plane[] plns = new Plane[6];
+		V3D nearN = new V3D(0, 0, 1);
+		V3D nearD = new V3D(0,0,100);
+		
+		V3D farN = new V3D(0, 0, -1);
+		V3D farD = new V3D(0,0,500);
+		
+		V3D leftN = new V3D(1, 0, 0);
+		V3D leftD = new V3D(-200,0,0);
+		
+		V3D rightN = new V3D(-1, 0, 0);
+		V3D rightD = new V3D(200,0,0);
+		
+		V3D topN = new V3D(0, 1, 0);
+		V3D topD = new V3D(0,-200,0);
+		
+		V3D botN = new V3D(0, -1, 0);
+		V3D botD = new V3D(0,200,0);
+		
+		plns[0] = new Plane(nearN, nearD);
+		plns[1] = new Plane(farN, farD);
+		plns[2] = new Plane(leftN, leftD);
+		plns[3] = new Plane(rightN, rightD);
+		plns[4] = new Plane(topN, topD);
+		plns[5] = new Plane(botN, botD);
+		
+		return plns;
 	}
 
 	public V3D transform(V3D vec) {
@@ -93,25 +103,25 @@ public class Camera {
 
 	public void smoothMove(double value) {
 		if (left)
-			position.add(getMovementVec(1,0,0,value));
+			position.add(getMovementVec(1, 0, 0, value));
 		if (right)
-			position.add(getMovementVec(-1,0,0,value));
+			position.add(getMovementVec(-1, 0, 0, value));
 		if (up)
-			position.add(getMovementVec(0,1,0,value));
+			position.add(getMovementVec(0, 1, 0, value));
 		if (down)
-			position.add(getMovementVec(0,-1,0,value));
+			position.add(getMovementVec(0, -1, 0, value));
 		if (forwards)
-			position.add(getMovementVec(0,0,1,value));
+			position.add(getMovementVec(0, 0, 1, value));
 		if (backwards)
-			position.add(getMovementVec(0,0,-1,value));
+			position.add(getMovementVec(0, 0, -1, value));
 		if (upRot)
-			rotation.data[0][0] -= value/2;
+			rotation.data[0][0] -= value / 2;
 		if (downRot)
-			rotation.data[0][0] += value/2;
+			rotation.data[0][0] += value / 2;
 		if (leftRot)
-			rotation.data[1][0] += value/2;
+			rotation.data[1][0] += value / 2;
 		if (rightRot)
-			rotation.data[1][0] -= value/2;
+			rotation.data[1][0] -= value / 2;
 	}
 
 	public void keyInput(KeyCode code, boolean activate) {
@@ -165,7 +175,7 @@ public class Camera {
 		boolean visible = true;
 		V3D vector = transform(vec);
 		for (int i = 0; i < 6; i++) {
-			if (V3D.sub(vector, frustum[i]).skalar(frustum_normals[i]) < 0) {
+			if (frustum[i].behind(vector)) {
 				visible = false;
 				break;
 			}
@@ -174,25 +184,16 @@ public class Camera {
 	}
 
 	public V3D clipFrustum(V3D vec) {
-		int index = -1;
 		V3D vector = transform(vec);
 		for (int i = 0; i < 6; i++) {
-			if (V3D.sub(vector, frustum[i]).skalar(frustum_normals[i]) < 0) {
-				index = i;
-				break;
+			if (frustum[i].behind(vector)) {
+				double t = frustum[i].lineIntersectValue(V3D.ZERO, vector);
+				V3D diff = V3D.sub(vec, position);
+				diff.skalar_mult(t);
+				return V3D.add(position, diff);
 			}
 		}
-		if (index == -1) {
-			return vec;
-		} else {
-			V3D p = V3D.fromMatrix(transform(vec));
-			double d = frustum[index].skalar(frustum_normals[index]);
-			double t = (d - frustum[index].getX() * p.getX() - frustum[index].getY() * p.getY()
-					- frustum[index].getZ() * p.getZ())
-					/ (-frustum[index].getX() * p.getX() - frustum[index].getY() * p.getY()
-							- frustum[index].getZ() * p.getZ());
-			return new V3D(vec.getX() - t * vec.getX(), vec.getY() - t * vec.getY(), vec.getZ() - t * vec.getZ());
-		}
+		return vec;
 	}
 
 	public void left(boolean type) {
@@ -260,13 +261,13 @@ public class Camera {
 		cv.rotateZ(rotation.getZ());
 		return cv;
 	}
-	
+
 	private V3D getMovementVec(double x, double y, double z, double value) {
 		V3D vec = new V3D(x * value, y * value, z * value);
 		vec.rotateX(rotation.getX());
 		vec.rotateY(rotation.getY());
 		vec.rotateZ(rotation.getZ());
-		//vec.log();
+		// vec.log();
 		return vec;
 	}
 
@@ -349,7 +350,7 @@ public class Camera {
 	public double getRecordingSurfaceZ() {
 		return RecordingSurface.getZ();
 	}
-	
+
 	public double getOPlane(int index) {
 		return OrthographicPlanes[index];
 	}

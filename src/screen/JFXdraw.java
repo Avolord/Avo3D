@@ -1,6 +1,7 @@
 package screen;
 
 import obj3D.Obj3D;
+
 import compute.V3D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -55,7 +56,6 @@ public class JFXdraw extends Application {
 		Obj3D.initBuffer(buffer);
 
 		buffer2D.translate(buffer.getWidth() / 2, buffer.getHeight() / 2);
-		//Render.rotate(0, 0, 0);
 		launch(args);
 	}
 

@@ -76,10 +76,10 @@ public class Projection extends Camera{
 	}
 	
 	public Point2D Perspective(V3D vec) {
-		if(!inFrustum(vec)) {
-			return null;
-		}		
-		V3D d = transform(vec);
+//		if(!inFrustum(vec)) {
+//			return null;
+//		}		
+		V3D d = transform(clipFrustum(vec));
 		return new Point2D((ViewerDistance.getZ() / d.getZ()) * d.getX() + ViewerDistance.getX(),
 				(ViewerDistance.getZ() / d.getZ()) * d.getY() + ViewerDistance.getY());
 	}

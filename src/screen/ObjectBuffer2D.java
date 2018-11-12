@@ -355,6 +355,30 @@ public class ObjectBuffer2D {
 		ctx.fillPolygon(valX, valY, p2ds.length);
 	}
 	
+	public void strokePoly(String color, Point2D... p2ds) {
+		ctx.setStroke(Color.web(color));
+		double[] valX = new double[p2ds.length];
+		double[] valY = new double[p2ds.length];
+		
+		for (int i = 0; i < p2ds.length; i++) {
+			valX[i] = p2ds[i].getX();
+			valY[i] = p2ds[i].getY();
+		}	
+		ctx.strokePolygon(valX, valY, p2ds.length);
+	}
+	
+	public void strokePoly(Color color, Point2D... p2ds) {
+		ctx.setStroke(color);
+		double[] valX = new double[p2ds.length];
+		double[] valY = new double[p2ds.length];
+		
+		for (int i = 0; i < p2ds.length; i++) {
+			valX[i] = p2ds[i].getX();
+			valY[i] = p2ds[i].getY();
+		}	
+		ctx.strokePolygon(valX, valY, p2ds.length);
+	}
+	
 	public void write(String text, double x, double y) {
 		ctx.setFill(Color.BLACK);
 		ctx.fillText(text, x, y);

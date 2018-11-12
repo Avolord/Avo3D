@@ -1,6 +1,7 @@
-package obj3D;
+package obj3D.Objects;
 
 import compute.V3D;
+import obj3D.Obj3D;
 
 public class Sphere extends Obj3D {
 	private int amount = 25;

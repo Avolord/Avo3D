@@ -1,4 +1,4 @@
-package obj3D;
+package obj3D.Objects;
 
 public class Plane {
 

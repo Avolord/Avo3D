@@ -10,7 +10,7 @@ import main.console;
 import screen.ObjectBuffer2D;
 
 public class Obj3D {
-	private static ObjectBuffer2D buffer = null;
+	protected static ObjectBuffer2D buffer = null;
 	private static Projection projection = new Projection(0d, 0d, -200d, 0d, 0d, 0d);
 
 	protected ArrayList<V3D> edges = null;
@@ -82,13 +82,15 @@ public class Obj3D {
 					break;
 				}
 			}
-			if (visible)
+			if (visible) {
 				buffer.fillPoly(faceColor, faceP);
+				buffer.strokePoly(vertColor, faceP);
+			}
 		});
-		vertices.forEach(vert -> {
-			if (points[vert[0]] != null && points[vert[1]] != null)
-				buffer.line(points[vert[0]], points[vert[1]], vertColor);
-		});
+//		vertices.forEach(vert -> {
+//			if (points[vert[0]] != null && points[vert[1]] != null)
+//				buffer.line(points[vert[0]], points[vert[1]], vertColor);
+//		});
 	}
 
 	public void drawEdges() {
