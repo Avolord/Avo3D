@@ -53,7 +53,6 @@ public class Face {
 		if(FX.projector.infront(vertecies.get(0)) ^ previousInside) {
 			result.add(FX.projector.clipToNearPlane(vertecies.get(0), previousVertex));
 		}
-		//System.out.println(result.size());
 		return result;
 	}
 

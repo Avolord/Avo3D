@@ -36,6 +36,13 @@ public class Obj3D {
 		}
 	}
 
+	public void euler_rotate(double x, double y, double z) {
+		Iterator<Vector4> iterator = vertecies.iterator();
+		while (iterator.hasNext()) {
+			iterator.next().linear_euler_rotate_ZYX(x, y, z);
+		}
+	}
+	
 	public void rotate(double x, double y, double z) {
 		Iterator<Vector4> iterator = vertecies.iterator();
 		while (iterator.hasNext()) {

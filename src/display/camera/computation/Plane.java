@@ -50,30 +50,32 @@ public final class Plane {
 	}
 
 	public Vector4 lineIntersect(Vector4 A, Vector4 B) {
-		Vector4 dir = Vector4.sub(B, A);
+		Vector4 direction = Vector4.sub(B, A);
 		double t;
 		try {
-			t = (dist - normal.skalar(A)) / (normal.skalar(dir));
+			t = (dist - normal.skalar(A)) / (normal.skalar(direction));
 		} catch (ArithmeticException e) {
 			return null;
 		}
 		if (t >= 0 && t <= 1) {
-			dir.skalar_mult(t);
-			return Vector4.add(A, dir);
+			direction.skalar_mult(t);
+			direction.add(A);
+			return direction;
 		}
 		return null;
 	}
 
 	public Vector4 lineIntersectFull(Vector4 A, Vector4 B) {
-		Vector4 dir = Vector4.sub(B, A);
+		Vector4 direction = Vector4.sub(B, A);
 		double t;
 		try {
-			t = (dist - normal.skalar(A)) / (normal.skalar(dir));
+			t = (dist - normal.skalar(A)) / (normal.skalar(direction));
 		} catch (ArithmeticException e) {
 			return null;
 		}
-		dir.skalar_mult(t);
-		return Vector4.add(A, dir);
+		direction.skalar_mult(t);
+		direction.add(A);
+		return direction;
 	}
 	
 	public double lineIntersectValue(Vector4 A, Vector4 B) {

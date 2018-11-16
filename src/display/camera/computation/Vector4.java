@@ -137,6 +137,28 @@ public class Vector4 extends Matrix {
 		data[2][0] -= w;
 	}
 	
+	public void linear_euler_rotate_ZYX(double x_rotation, double y_rotation, double z_rotation) {
+		
+		double new_x = data[0][0] * (Math.cos(z_rotation) * Math.cos(y_rotation))
+				+ data[1][0] * (Math.cos(z_rotation) * Math.sin(y_rotation) * Math.sin(x_rotation)
+						- Math.sin(z_rotation) * Math.cos(x_rotation))
+				+ data[2][0] * (Math.sin(z_rotation) * Math.sin(x_rotation)
+						+ Math.cos(z_rotation) * Math.sin(y_rotation) * Math.cos(x_rotation));
+		
+		double new_y = data[0][0] * (Math.sin(z_rotation) * Math.cos(y_rotation))
+				+ data[1][0] * (Math.sin(z_rotation) * Math.sin(y_rotation) * Math.sin(x_rotation)
+						+ Math.cos(z_rotation) * Math.cos(x_rotation))
+				+ data[2][0] * (Math.sin(z_rotation) * Math.sin(y_rotation) * Math.cos(x_rotation)
+						- Math.cos(z_rotation) * Math.sin(x_rotation));
+		
+		double new_z = -data[0][0] * Math.sin(y_rotation) + data[1][0] * (Math.cos(y_rotation) * Math.sin(x_rotation))
+				+ data[2][0] * (Math.cos(y_rotation) * Math.cos(x_rotation));
+		
+		data[0][0] = new_x;
+		data[1][0] = new_y;
+		data[2][0] = new_z;
+	}
+	
 	public static Vector4 skalar_mult(Vector4 vectorA, double n) {
 		return new Vector4(
 			vectorA.getX()*n,

@@ -4,7 +4,6 @@ package display.camera;
 import display.camera.computation.*;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
-import setup.console;
 
 public class Camera {
 	public boolean left, right, up, down, forwards, backwards, leftRot, rightRot, upRot, downRot; // Camera Movement
@@ -32,7 +31,7 @@ public class Camera {
 	private static Plane[] initFrustum() {
 		Plane[] plns = new Plane[6];
 		Vector4 nearN = new Vector4(0, 0, 1);
-		Vector4 nearD = new Vector4(0,0,100);
+		Vector4 nearD = new Vector4(0,0,10);
 		
 		Vector4 farN = new Vector4(0, 0, -1);
 		Vector4 farD = new Vector4(0,0,1000);
@@ -158,7 +157,7 @@ public class Camera {
 	public boolean inFrustum(Vector4 vec) {
 		boolean visible = true;
 		Vector4 vector = transform(vec);
-		for (int i = 1; i < 6; i++) { //RESET TO 6 IF DONE TESTING
+		for (int i = 1; i < 6; i++) { 
 			if (frustum[i].behind(vector)) {
 				visible = false;
 				break;

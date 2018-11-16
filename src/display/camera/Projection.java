@@ -1,8 +1,5 @@
 package display.camera;
 
-import java.util.ArrayList;
-
-import display.camera.computation.Matrix;
 import display.camera.computation.Vector4;
 import javafx.geometry.Point2D;
 
@@ -24,7 +21,6 @@ public class Projection extends Camera {
 
 	public Point2D Perspective2(Vector4 vec) {
 		if(!inFrustum(vec)) {
-			//System.out.println(1);
 			return null;
 		}
 		Vector4 d = transform(vec);
